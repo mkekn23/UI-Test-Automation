@@ -21,11 +21,11 @@ public class BaseTest {
     @Parameters({"deviceProfile"})
     public void setUp(@Optional("desktop") String deviceProfile) {
         Configuration.browser = "chrome";
+        Configuration.pageLoadStrategy = "eager";
         Configuration.baseUrl = TBC_URL;
         Configuration.timeout = 10000;
 
         ChromeOptions options = new ChromeOptions();
-
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("profile.default_content_setting_values.geolocation", 2); // 2 = Block
         prefs.put("profile.default_content_setting_values.notifications", 2);
@@ -56,7 +56,7 @@ public class BaseTest {
     private void acceptCookiesIfPresent() {
         SelenideElement acceptCookieBtn = $("app-cookie-consent button.primary");
         try {
-            if (acceptCookieBtn.is(Condition.visible, Duration.ofSeconds(4))) {
+            if (acceptCookieBtn.is(Condition.visible, Duration.ofSeconds(5))) {
                 acceptCookieBtn.click();
             }
         } catch (Throwable ignored) {
