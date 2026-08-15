@@ -105,11 +105,13 @@ Zephyr link: https://freeuni-team-oz2c8rs2.atlassian.net/?continue=https%3A%2F%2
 1. **Cookie Banner Interception (`ElementClickInterceptedException`):** Single Page Application (SPA) არქიტექტურის გამო, მობაილ რეჟიმში გვერდების გადართვისას `app-cookie-consent` ბანერი ხელახლა რენდერდებოდა და ფარავდა ეკრანის ქვედა 40%-ს, რის გამოც Selenide-ის ქლიქი ხვდებოდა Cookie-ს ღილაკს და არა სამიზნე ელემენტს.
 2. **Encoding Mismatch (Character Corruption):** Windows/Maven გარემოში ქართული ასოებით ძებნისას (`byText("გზავნილები")`), ენკოდინგის აცდენის გამო ტექსტი გარდაიქმნებოდა `?????????`-ად, რაც იწვევდა `NoSuchElementException`-ს.
 3. **Asynchronous SPA Hydration:** Angular-ის კომპონენტების ჩატვირთვის დაგვიანება ეკრანის ზომის ცვლილებისას ( ტესტი ცდილობდა ელემენტთან ინტერაქციას მანამ, სანამ Angular საბოლოოდ დაარენდერებდა DOM-ს)
+4. `ElementShould text "Commission" {.tbcx-pw-money-transfer-fee-calculator__cards}`assertion ცდებოდა `Actual value: text=""`-ით, თუმცა DOM snapshot exception-ში უკვე სრულად ჩატვირთულ მონაცემს (MoneyGram, IntelExpress, Ria, WesternUnion — commission-ებით) აჩვენებდა. ქვეყნის არჩევის შემდეგ Angular ჯერ ცარიელ/placeholder კონტეინერს რენდერავს, backend-იდან საკომისიოს მონაცემების დაბრუნების შემდეგ კი ავსებს DOM-ს. Selenide-ის default polling ზუსტად იმ შუალედურ (ცარიელ) მდგომარეობას მოხვდა.
 
 ### როგორ ავიცილეთ თავიდან:
 * **გლობალური ჰენდლერი `@BeforeMethod`-ში:** Cookie-ს დახურვის ლოგიკა გადავიტანეთ `@BeforeMethod`-ში `BaseTest.java`-ში. ყოველი ტესტ-მეთოდის წინ ამოწმდება ბანერის არსებობა Duration.ofSeconds -ის დახმარებით.
-* **UTF-8 ენკოდინგის სტანდარტიზაცია:** `pom.xml`-ში დაემატა მკაცრი UTF-8 პარამეტრები `maven-surefire-plugin`-ისთვის (`<argLine>-Dfile.encoding=UTF-8</argLine>`), რამაც სრულად აღმოფხვრა სიმბოლოების გაფუჭება.
+* **UTF-8 ენკოდინგის სტანდარტიზაცია:** `pom.xml`-ში დაემატა UTF-8 პარამეტრები `maven-surefire-plugin`-ისთვის (`<argLine>-Dfile.encoding=UTF-8</argLine>`), რამაც სრულად აღმოფხვრა სიმბოლოების გაფუჭება.
 * გამოვიყენე Selenide-ის `Condition.visible`, `scrollIntoView()` და საჭიროების შემთხვევაში `ClickOptions.usingJavaScript()`, რაც უზრუნველყოფს ელემენტის მზაობას დაჭერამდე.
+* **loading-ის დასრულებაზე ცხადი დალოდება, ტექსტის შემოწმებამდე:** Timeout გავზარდე მხოლოდ ამ კონკრეტულ assertion-ზე.
 
 ## Mobile is not Desktop 
 
