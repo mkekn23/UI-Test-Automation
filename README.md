@@ -2,11 +2,43 @@
 
 ეს პროექტი წარმოადგენს tbcbank.ge ვებ-პორტალის ავტომატიზებულ UI ტესტირებას, რომელიც აგებულია Java 17, Selenide, TestNG და Maven ტექნოლოგიურ სტეკზე. პროექტი ფარავს როგორც Desktop, ასევე Mobile (Responsive) ვერსიების პარალელურ ტესტირებას.
 
+##  Project Structure
+
+```text
+src
+├── main
+│   └── java
+│       ├── constants
+│       │   └── Constants.java               # გლობალური მუდმივები
+│       ├── pages                            # Page Object Model — ლოკატორები + დაბალი დონის ინტერაქციები
+│       │   ├── CurrencyPage.java
+│       │   ├── LoansPage.java
+│       │   ├── LocationsPage.java
+│       │   └── MoneyTransfersPage.java
+│       └── steps                            # Action/Steps ფენა — ბიზნეს-დონის ქმედებები
+│           ├── CurrencySteps.java
+│           ├── LoansSteps.java
+│           ├── LocationsSteps.java
+│           └── MoneyTransfersSteps.java
+└── test
+    └── java
+        └── tests
+            ├── BaseTest.java                # საერთო setup/teardown, cookie handling, browser profile-ები
+            ├── CurrencyTest.java
+            ├── LoansFactory.java            # @Factory — დინამიური ტესტ-ინსტანციები Loans-სთვის
+            ├── LoansTest.java
+            ├── LocationsFilterTest.java
+            ├── LocationsSearchTest.java
+            ├── MoneyTransfersFactory.java   # @Factory — დინამიური ტესტ-ინსტანციები Transfers-სთვის
+            └── MoneyTransfersTest.java
+```
+Zephyr link: https://freeuni-team-oz2c8rs2.atlassian.net/?continue=https%3A%2F%2Ffreeuni-team-oz2c8rs2.atlassian.net%2Fwelcome%2Fsoftware%3FprojectId%3D10001&atlOrigin=eyJpIjoiMzk0YTYwYTQ4OTEzNGQwZmJlNzUxZDczMjczMWU2OTciLCJwIjoiamlyYS1zb2Z0d2FyZSJ9
+
 ## Why Automate This?
 ნებისმიერი UI ავტომატიზაციის მთავარი მიზანია მაღალი რისკის შემცველი და ბიზნესისთვის კრიტიკული ფუნქციონალის ხშირი, სწრაფი და უშეცდომო გადამოწმება. პროექტში ავტომატიზაციისთვის შეირჩა 5 ძირითადი სცენარი:
 
 ### 1. KAN-T1: რუკაზე ძებნა ფილიალებისა და ბანკომატების გაფილტვრით
-* **რისკი:** საშუალო-მაღალი. არასწორი გაფილტვრისას მომხმარებელს შეიძლება ეჩვენოს დაკეტილი ფილიალი ან ბანკომატი, სადაც არ არის სასურველი სერვისი (მაგ. სავალუტო კასა, 24/7 წვდომა).
+* **რისკი:** საშუალო-მაღალი. არასწორი გაფილტვრისას მომხმარებელს შეიძლება ეჩვენოს დაკეტილი ფილიალი ან ბანკომატი, სადაც არ არის სასურველი სერვისი.
 * **ბიზნეს ღირებულება:** მაღალი. უზრუნველყოფს კლიენტების სწორ გადამისამართებას შესაბამის ლოკაციაზე და ზოგავს ბანკის ოპერატორების დროს.
 * **რატომ UI ავტომატიზაცია?:** ფილტრების კომბინაცია დინამიურად ცვლის DOM-ში ასახულ ლოკაციების სიასა და რუკის მარკერებს. UI ავტომატიზაცია ამოწმებს, რომ ფილტრის ჩართვა/გამორთვა რეალურ დროში სწორად ანახლებს ვიზუალურ კომპონენტებს.
 
@@ -60,7 +92,7 @@
 1. **ID / Unique Functional Attributes:** `#id`, `[formcontrolname]`, `[mapid]` *(უმაღლესი პრიორიტეტი)*
 2. **Semantic Structural Attributes:** `a[href*='...']`, `button[type='submit']`
 3. **Component Specific BEM Classes:** `.currency-calculator__swap__button`
-4. **Accessible Text Selectors:** `byText(...)` (მხოლოდ დინამიური/ლოკალიზებული ელემენტებისთვის)
+4. **Accessible Text Selectors:** `byText(...)` 
 5. **Absolute XPath:** *(0% გამოყენება)*
 
 ## Flaky Test Awareness
@@ -72,7 +104,7 @@
 ### Flakiness-ის წყაროები:
 1. **Cookie Banner Interception (`ElementClickInterceptedException`):** Single Page Application (SPA) არქიტექტურის გამო, მობაილ რეჟიმში გვერდების გადართვისას `app-cookie-consent` ბანერი ხელახლა რენდერდებოდა და ფარავდა ეკრანის ქვედა 40%-ს, რის გამოც Selenide-ის ქლიქი ხვდებოდა Cookie-ს ღილაკს და არა სამიზნე ელემენტს.
 2. **Encoding Mismatch (Character Corruption):** Windows/Maven გარემოში ქართული ასოებით ძებნისას (`byText("გზავნილები")`), ენკოდინგის აცდენის გამო ტექსტი გარდაიქმნებოდა `?????????`-ად, რაც იწვევდა `NoSuchElementException`-ს.
-3. **Asynchronous SPA Hydration:** Angular-ის კომპონენტების ჩატვირთვის დაგვიანება ეკრანის ზომის ცვლილებისას (Mobile emulation).
+3. **Asynchronous SPA Hydration:** Angular-ის კომპონენტების ჩატვირთვის დაგვიანება ეკრანის ზომის ცვლილებისას ( ტესტი ცდილობდა ელემენტთან ინტერაქციას მანამ, სანამ Angular საბოლოოდ დაარენდერებდა DOM-ს)
 
 ### როგორ ავიცილეთ თავიდან:
 * **გლობალური ჰენდლერი `@BeforeMethod`-ში:** Cookie-ს დახურვის ლოგიკა გადავიტანეთ `@BeforeMethod`-ში `BaseTest.java`-ში. ყოველი ტესტ-მეთოდის წინ ამოწმდება ბანერის არსებობა Duration.ofSeconds -ის დახმარებით.
@@ -97,7 +129,7 @@
 * **Viewport Overflow:** არასწორად დაფორმატებული ცხრილები ან კალკულატორები იწვევენ ეკრანის ჰორიზონტალურ სქროლს (Horizontal Scroll Bug), რაც ამახინჯებს მობილურ ინტერფეისს.
 
 
-## Design Patterns & Advanced Architecture
+## Design Patterns 
 
 პროექტის არქიტექტურაში გამოყენებულია რამდენიმე QA Automation Design Pattern-ი კოდის მასშტაბირებადობისა და ეფექტურობისთვის:
 
