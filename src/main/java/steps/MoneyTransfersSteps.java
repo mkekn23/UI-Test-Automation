@@ -5,6 +5,8 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import pages.MoneyTransfersPage;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$$;
@@ -98,7 +100,7 @@ public class MoneyTransfersSteps {
                 .shouldHave(CollectionCondition.sizeGreaterThan(0));
 
         transfersPage.transferCardsContainer
-                .shouldHave(Condition.text(FEE_TEXT));
+                .shouldHave(Condition.text(FEE_TEXT),  Duration.ofSeconds(10));
 
         return this;
     }

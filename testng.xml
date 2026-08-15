@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="tbcbank.ge ui testing" >
+<suite name="tbcbank.ge ui testing"
+       parallel="tests"
+       thread-count="2">
 
     <test name="Desktop Tests"
           group-by-instances="true"
-          parallel="instances"
-          thread-count="2">
+    >
         <parameter name="deviceProfile" value="desktop"/>
         <classes>
             <class name="tests.LocationsFilterTest"/>
@@ -18,8 +19,7 @@
 
     <test name="Mobile Tests"
           group-by-instances="true"
-          parallel="instances"
-          thread-count="2">
+      >
         <parameter name="deviceProfile" value="mobile"/>
         <classes>
             <class name="tests.LocationsFilterTest"/>

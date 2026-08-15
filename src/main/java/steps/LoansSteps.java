@@ -5,6 +5,8 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import pages.LoansPage;
 
+import java.time.Duration;
+
 public class LoansSteps {
 
     private final LoansPage loansPage = new LoansPage();
@@ -29,6 +31,7 @@ public class LoansSteps {
         } else {
             loansPage.forMeTab.hover();
             loansPage.consumerLoansLink
+                    .shouldBe(Condition.visible, Duration.ofSeconds(5))
                     .scrollIntoView("{block: 'center'}")
                     .click(ClickOptions.usingJavaScript());
         }
@@ -37,10 +40,11 @@ public class LoansSteps {
 
 
     public LoansSteps clickConditionsButton() {
-        loansPage.conditionsBtn.click();
+        loansPage.conditionsBtn
+                .shouldBe(Condition.visible, Duration.ofSeconds(10))
+                .click();
         return this;
     }
-
     public LoansSteps enterLoanAmount(String amount) {
         loansPage.amountInput.clear();
         loansPage.amountInput.setValue(amount);
