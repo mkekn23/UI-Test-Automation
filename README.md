@@ -67,7 +67,7 @@
 
 ### არჩეული ტესტი: `MoneyTransfersTest` & `CurrencyTest`
 
-ტესტირების პროცესში ერთ-ერთი მთავარი გამოწვევა იყო **Flaky Tests** (ტესტები, რომლებიც ხან გადიან, ხან ფეილდებიან კოდის ცვლილების გარეშე).
+ტესტირების პროცესში ერთ-ერთი მთავარი გამოწვევა იყო **Flaky Tests**
 
 ### Flakiness-ის წყაროები:
 1. **Cookie Banner Interception (`ElementClickInterceptedException`):** Single Page Application (SPA) არქიტექტურის გამო, მობაილ რეჟიმში გვერდების გადართვისას `app-cookie-consent` ბანერი ხელახლა რენდერდებოდა და ფარავდა ეკრანის ქვედა 40%-ს, რის გამოც Selenide-ის ქლიქი ხვდებოდა Cookie-ს ღილაკს და არა სამიზნე ელემენტს.
